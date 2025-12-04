@@ -3,3 +3,8 @@ djangorestframework>=3.12.4,<3.16.0
 psycopg2>=2.9.3,<2.10
 drf-spectacular>=0.15.1,<0.28.0
 pillow>=9.5.0,<11.3.0
+channels>=3.0.0,<4.3.2
+daphne>=3.0.0,<4.2.1
+
+channels-redis>=3.0.0,<4.3.0
+whitenoise>=6.0.0,<6.11.0

@@ -8,8 +8,17 @@ services:
       - "8000:8000"
     volumes:
       - ./app:/app
+      - static_volume:/vol/web/static
+      - media_volume:/vol/web/media
     command: >
-      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      sh -c "
+        until nc -z db 5432; do
+          echo 'Esperando a PostgreSQL...';
+          sleep 1;
+        done;
+        python manage.py migrate &&
+        daphne -b 0.0.0.0 -p 8000 app.asgi:application
+      "
     environment:
       - DB_HOST=db
       - DB_NAME=devdb
@@ -17,9 +26,10 @@ services:
       - DB_PASS=devpassword
     depends_on:
       - db
+      - redis
 
   db:
-    image: postgres:latest
+    image: postgres:16
     volumes:
       - dev-db-data:/var/lib/postgresql/data
     environment:
@@ -27,5 +37,15 @@ services:
       POSTGRES_PASSWORD: devpassword
       POSTGRES_DB: devdb
 
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
 volumes:
   dev-db-data:
+  static_volume:
+  media_volume:
+  redis-data:
