@@ -31,3 +31,29 @@ class UserAdmin(BaseUserAdmin):
             )
         }),
     )
+
+
+@admin.register(models.Competition)
+class CompetitionAdmin(admin.ModelAdmin):
+    """Define the admin pages for competitions."""
+    list_display = ['name', 'year', 'host_country']
+
+
+@admin.register(models.Team)
+class TeamAdmin(admin.ModelAdmin):
+    """Define the admin pages for teams."""
+    ordering = ['name']
+    list_display = ['name', 'competition']
+    list_filter = ['competition']
+    search_fields = ['name']
+    raw_id_fields = ['competition']
+
+
+@admin.register(models.Match)
+class MatchAdmin(admin.ModelAdmin):
+    """Define the admin pages for matches."""
+    ordering = ['-date']
+    list_display = ['competition', 'stage', 'home_team', 'away_team', 'date', 'home_score', 'away_score', 'is_finished']
+    list_filter = ['competition', 'stage', 'is_finished']
+    search_fields = ['home_team__name', 'away_team__name']
+    raw_id_fields = ['home_team', 'away_team', 'competition']
